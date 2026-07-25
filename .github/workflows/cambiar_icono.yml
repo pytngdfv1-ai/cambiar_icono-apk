@@ -1,7 +1,7 @@
 name: Cambiar Icono y Firmar APK
 
 on:
-  workflow_dispatch: # Permite ejecutar la acción manualmente desde el botón Run workflow
+  workflow_dispatch: # Permite ejecutar la acción manualmente con el botón Run workflow
 
 jobs:
   build:
@@ -19,7 +19,9 @@ jobs:
 
       - name: Descargar uber-apk-signer
         run: |
-          curl -L -o uber-apk-signer.jar https://github.com/PatrickF1/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
+          # Obtener la URL de descarga directa de la última release válida vía API de GitHub
+          DOWNLOAD_URL=$(curl -s https://api.github.com/repos/PatrickF1/uber-apk-signer/releases/latest | grep "browser_download_url.*jar" | cut -d : -f 2,3 | tr -d \")
+          curl -L -o uber-apk-signer.jar "$DOWNLOAD_URL"
 
       - name: Descompilar APK
         run: |
