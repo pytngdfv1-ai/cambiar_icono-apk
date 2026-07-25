@@ -18,10 +18,13 @@ jobs:
           java-version: '17'
 
       - name: Descargar uber-apk-signer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Obtener la URL de descarga directa de la última release válida vía API de GitHub
-          DOWNLOAD_URL=$(curl -s https://api.github.com/repos/PatrickF1/uber-apk-signer/releases/latest | grep "browser_download_url.*jar" | cut -d : -f 2,3 | tr -d \")
-          curl -L -o uber-apk-signer.jar "$DOWNLOAD_URL"
+          # Usa la CLI de GitHub para descargar el archivo .jar de la última release oficial
+          gh release download --repo PatrickF1/uber-apk-signer --pattern "*.jar" --clobber
+          # Renombra el archivo descargado para asegurar un nombre limpio y estándar
+          mv uber-apk-signer*.jar uber-apk-signer.jar
 
       - name: Descompilar APK
         run: |
