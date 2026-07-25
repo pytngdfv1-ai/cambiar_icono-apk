@@ -1,7 +1,7 @@
 name: Cambiar Icono y Firmar APK
 
 on:
-  workflow_dispatch: # Permite ejecutar la acción manualmente con el botón Run workflow
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,14 +17,10 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Descargar uber-apk-signer
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Descargar uber-apk-signer (Oficial)
         run: |
-          # Usa la CLI de GitHub para descargar el archivo .jar de la última release oficial
-          gh release download --repo PatrickF1/uber-apk-signer --pattern "*.jar" --clobber
-          # Renombra el archivo descargado para asegurar un nombre limpio y estándar
-          mv uber-apk-signer*.jar uber-apk-signer.jar
+          # Descarga directa desde el repositorio oficial (patrickfav) usando wget
+          wget -qO uber-apk-signer.jar "https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar"
 
       - name: Descompilar APK
         run: |
@@ -33,7 +29,6 @@ jobs:
 
       - name: Reemplazar iconos
         run: |
-          # Busca y reemplaza ic_launcher en cualquier subcarpeta dentro de apk_decompiled
           find apk_decompiled -name "ic_launcher*.png" -exec cp logo.png {} \;
 
       - name: Recompilar APK
